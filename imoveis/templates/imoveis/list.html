@@ -1,0 +1,15 @@
+<h1>Imóveis</h1>
+
+<a href="{% url 'imovel_create' %}">Adicionar imóvel</a>
+
+<hr>
+
+{% for imovel in imoveis %}
+    <p>
+        {{ imovel.codigo }} -
+        {{ imovel.endereco }} -
+        {{ imovel.bairro }}
+    </p>
+{% empty %}
+    <p>Nenhum imóvel cadastrado.</p>
+{% endfor %}
