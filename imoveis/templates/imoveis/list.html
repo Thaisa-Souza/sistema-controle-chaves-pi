@@ -9,7 +9,17 @@
         {{ imovel.codigo }} -
         {{ imovel.endereco }} -
         {{ imovel.bairro }}
+
+        <a href="{% url 'imovel_update' imovel.id %}">
+            Editar
+        </a>
+
+        <a href="{% url 'imovel_delete' imovel.id %}">
+            Excluir
+        </a>
     </p>
+
 {% empty %}
     <p>Nenhum imóvel cadastrado.</p>
 {% endfor %}
+

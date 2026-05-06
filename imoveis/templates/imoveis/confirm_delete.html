@@ -1,0 +1,18 @@
+<h1>Excluir imóvel</h1>
+
+<p>
+    Deseja realmente excluir:
+    {{ imovel.codigo }} ?
+</p>
+
+<form method="POST">
+    {% csrf_token %}
+
+    <button type="submit">
+        Confirmar exclusão
+    </button>
+</form>
+
+<a href="{% url 'imovel_list' %}">
+    Cancelar
+</a>
