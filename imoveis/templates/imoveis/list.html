@@ -54,40 +54,41 @@
 
 </form>
 
-<div class="table-responsive">
+<div class="row">
 
-<table class="table table-striped table-bordered align-middle">
+{% for imovel in imoveis %}
 
-    <thead class="table-primary">
+    <div class="col-md-6 mb-3">
 
-        <tr>
-            <th>Código</th>
-            <th>Endereço</th>
-            <th>Bairro</th>
-            <th>Status</th>
-            <th>Visitas</th>
-            <th>Ações</th>
-        </tr>
+        <div class="card shadow-sm h-100">
 
-    </thead>
+            <div class="card-body">
 
-    <tbody>
+                <h5 class="card-title">
+                    {{ imovel.codigo }}
+                </h5>
 
-        {% for imovel in imoveis %}
+                <p class="card-text">
 
-        <tr>
+                    <strong>Endereço:</strong>
+                    {{ imovel.endereco }}
 
-            <td>{{ imovel.codigo }}</td>
+                    <br>
 
-            <td>{{ imovel.endereco }}</td>
+                    <strong>Bairro:</strong>
+                    {{ imovel.bairro }}
 
-            <td>{{ imovel.bairro }}</td>
+                    <br>
 
-            <td>{{ imovel.status }}</td>
+                    <strong>Status:</strong>
+                    {{ imovel.status }}
 
-            <td>{{ imovel.total_visitas }}</td>
+                    <br>
 
-            <td>
+                    <strong>Visitas:</strong>
+                    {{ imovel.total_visitas }}
+
+                </p>
 
                 <a href="{% url 'imovel_update' imovel.id %}"
                    class="btn btn-warning btn-sm">
@@ -103,24 +104,21 @@
 
                 {% endif %}
 
-            </td>
+            </div>
 
-        </tr>
+        </div>
 
-        {% empty %}
+    </div>
 
-        <tr>
-            <td colspan="6">
-                Nenhum imóvel encontrado.
-            </td>
-        </tr>
+{% empty %}
 
-        {% endfor %}
+<p>
+    Nenhum imóvel encontrado.
+</p>
 
-    </tbody>
-
-</table>
+{% endfor %}
 
 </div>
+
 
 {% endblock %}

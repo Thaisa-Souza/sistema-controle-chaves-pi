@@ -8,15 +8,39 @@
 <body class="bg-light">
 
 <nav class="navbar navbar-dark bg-primary mb-4">
+  
   <div class="container d-flex justify-content-between">
     <a class="navbar-brand" href="{% url 'imovel_list' %}">Controle de Chaves</a>
 
-    <div>
-      <a href="{% url 'chave_list' %}" class="btn btn-light btn-sm">Chaves</a>
-      <a href="{% url 'imovel_list' %}" class="btn btn-light btn-sm">Imóveis</a>
-      <a href="{% url 'historico_list' %}" class="btn btn-light btn-sm">Histórico</a>
-    </div>
-  </div>
+    <div class="d-flex gap-2">
+
+    <a href="{% url 'chave_list' %}"
+       class="btn btn-light btn-sm">
+        Chaves
+    </a>
+
+    <a href="{% url 'imovel_list' %}"
+       class="btn btn-light btn-sm">
+        Imóveis
+    </a>
+
+    <a href="{% url 'historico_list' %}"
+       class="btn btn-light btn-sm">
+        Histórico
+    </a>
+
+    <form action="{% url 'logout' %}" method="post" class="d-inline">
+      {% csrf_token %}
+        <button type="submit" class="btn btn-danger btn-sm">
+          Sair
+        </button>
+    </form>
+
+
+
+</div>
+
+
 </nav>
 
 <div class="container">
