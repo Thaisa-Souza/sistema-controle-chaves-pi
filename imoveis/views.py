@@ -5,6 +5,7 @@ from django.shortcuts import get_object_or_404
 from django.db import models
 from django.db.models import Count
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
 
 @login_required
@@ -49,6 +50,7 @@ def imovel_create(request):
 
     if form.is_valid():
         form.save()
+        messages.success(request, 'Imóvel adicionado com sucesso!')
         return redirect('imovel_list')
 
     return render(request, 'imoveis/form.html', {
@@ -68,6 +70,7 @@ def imovel_update(request, pk):
 
     if form.is_valid():
         form.save()
+        messages.success(request, 'Imóvel editado com sucesso!')
         return redirect('imovel_list')
 
     return render(request, 'imoveis/form.html', {
@@ -85,6 +88,7 @@ def imovel_delete(request, pk):
 
     if request.method == 'POST':
         imovel.delete()
+        messages.success(request, 'Imóvel excluído com sucesso!')
         return redirect('imovel_list')
 
     return render(request, 'imoveis/confirm_delete.html', {
@@ -130,6 +134,7 @@ def retirar_chave(request, pk):
 
             chave.status = 'retirada'
             chave.save()
+            messages.success(request, 'Chave retirada com sucesso!')
 
             Movimentacao.objects.create(
                 chave=chave,
@@ -156,6 +161,7 @@ def devolver_chave(request, pk):
 
     chave.status = 'disponivel'
     chave.save()
+    messages.success(request, 'Chave devolvida com sucesso!')
 
     Movimentacao.objects.create(
         chave=chave,

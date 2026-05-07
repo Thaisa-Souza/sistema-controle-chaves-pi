@@ -2,15 +2,33 @@
 
 {% block content %}
 
+<div class="card shadow-sm">
 
-<h1>Novo imóvel</h1>
+    <div class="card-body">
 
-<form method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
+        <h2 class="mb-4">
+            Cadastro de imóvel
+        </h2>
 
-    <button type="submit">Salvar</button>
-</form>
+        <form method="POST" enctype="multipart/form-data">
 
+            {% csrf_token %}
+
+            {{ form.as_p }}
+
+            <button type="submit" class="btn btn-primary">
+                Salvar
+            </button>
+
+            <a href="{% url 'imovel_list' %}"
+               class="btn btn-secondary">
+                Cancelar
+            </a>
+
+        </form>
+
+    </div>
+
+</div>
 
 {% endblock %}

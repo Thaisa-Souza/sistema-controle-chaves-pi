@@ -2,23 +2,37 @@
 
 {% block content %}
 
+<div class="card shadow-sm">
 
-<h1>Retirar chave</h1>
+    <div class="card-body">
 
-<p>
-    Imóvel:
-    {{ chave.imovel.codigo }}
-</p>
+        <h2 class="mb-4">
+            Retirar chave
+        </h2>
 
-<form method="POST">
-    {% csrf_token %}
+        <p>
+            <strong>
+                Imóvel:
+            </strong>
 
-    {{ form.as_p }}
+            {{ chave.imovel.codigo }}
+        </p>
 
-    <button type="submit">
-        Confirmar retirada
-    </button>
-</form>
+        <form method="POST">
 
+            {% csrf_token %}
+
+            {{ form.as_p }}
+
+            <button type="submit"
+                    class="btn btn-primary">
+                Confirmar retirada
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
 
 {% endblock %}
