@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from .models import Imovel, Chave, Movimentacao
-from .forms import ImovelForm, ChaveForm, RetiradaForm
+from .forms import ImovelForm, RetiradaForm
 from django.shortcuts import get_object_or_404
 from django.db import models
 from django.db.models import Count

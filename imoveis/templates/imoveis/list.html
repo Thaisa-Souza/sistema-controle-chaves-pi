@@ -81,7 +81,32 @@
                     <br>
 
                     <strong>Status:</strong>
-                    {{ imovel.status }}
+                    {% if imovel.status == 'disponivel' %}
+
+                       <span class="badge bg-success">
+                       Disponível
+                       </span>
+
+                    {% elif imovel.status == 'analise' %}
+
+                       <span class="badge bg-warning text-dark">
+                       Em análise
+                       </span>
+
+                    {% elif imovel.status == 'alugado' %}
+
+                       <span class="badge bg-danger">
+                        Alugado
+                       </span>
+
+                    {% else %}
+
+                       <span class="badge bg-secondary">
+                        Inativo
+                       </span>
+
+                    {% endif %}
+
 
                     <br>
 

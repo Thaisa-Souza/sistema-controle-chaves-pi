@@ -8,11 +8,6 @@ class ImovelForm(forms.ModelForm):
         fields = '__all__'
 
 
-class ChaveForm(forms.ModelForm):
-    class Meta:
-        model = Chave
-        fields = '__all__'
-
 class RetiradaForm(forms.Form):
     nome_cliente = forms.CharField(max_length=100)
 
