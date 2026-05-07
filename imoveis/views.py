@@ -4,8 +4,10 @@ from .forms import ImovelForm, ChaveForm, RetiradaForm
 from django.shortcuts import get_object_or_404
 from django.db import models
 from django.db.models import Count
+from django.contrib.auth.decorators import login_required
 
 
+@login_required
 def imovel_list(request):
     query = request.GET.get('q', '')
 
@@ -41,7 +43,7 @@ def imovel_list(request):
     })
 
 
-
+@login_required
 def imovel_create(request):
     form = ImovelForm(request.POST or None, request.FILES or None)
 
@@ -54,6 +56,7 @@ def imovel_create(request):
     })
 
 
+@login_required
 def imovel_update(request, pk):
     imovel = get_object_or_404(Imovel, pk=pk)
 
@@ -72,7 +75,12 @@ def imovel_update(request, pk):
     })
 
 
+@login_required
 def imovel_delete(request, pk):
+
+    if not request.user.is_superuser and not request.user.groups.filter(name='Gerentes').exists():
+        return redirect('imovel_list')
+
     imovel = get_object_or_404(Imovel, pk=pk)
 
     if request.method == 'POST':
@@ -83,6 +91,9 @@ def imovel_delete(request, pk):
         'imovel': imovel
     })
 
+
+
+@login_required
 def chave_list(request):
     chaves = Chave.objects.select_related('imovel').all()
 
@@ -91,8 +102,13 @@ def chave_list(request):
     })
 
 
+@login_required
 def chave_create(request):
     form = ChaveForm(request.POST or None)
+
+    if not request.user.is_superuser and not request.user.groups.filter(name='Gerentes').exists():
+        return redirect('chave_list')
+
 
     if form.is_valid():
         form.save()
@@ -102,6 +118,8 @@ def chave_create(request):
         'form': form
     })
 
+
+@login_required
 def retirar_chave(request, pk):
     chave = get_object_or_404(Chave, pk=pk)
 
@@ -131,6 +149,8 @@ def retirar_chave(request, pk):
         'chave': chave
     })
 
+
+@login_required
 def devolver_chave(request, pk):
     chave = get_object_or_404(Chave, pk=pk)
 
@@ -145,6 +165,8 @@ def devolver_chave(request, pk):
 
     return redirect('chave_list')
 
+
+@login_required
 def historico_list(request):
     query = request.GET.get('q', '')
 
