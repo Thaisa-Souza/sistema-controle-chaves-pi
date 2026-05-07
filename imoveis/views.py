@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect
-from .models import Imovel, Chave
-from .forms import ImovelForm, ChaveForm
+from .models import Imovel, Chave, Movimentacao
+from .forms import ImovelForm, ChaveForm, RetiradaForm
 from django.shortcuts import get_object_or_404
+
 
 
 def imovel_list(request):
@@ -71,3 +72,47 @@ def chave_create(request):
     return render(request, 'imoveis/chave_form.html', {
         'form': form
     })
+
+def retirar_chave(request, pk):
+    chave = get_object_or_404(Chave, pk=pk)
+
+    if request.method == 'POST':
+        form = RetiradaForm(request.POST)
+
+        if form.is_valid():
+
+            chave.status = 'retirada'
+            chave.save()
+
+            Movimentacao.objects.create(
+                chave=chave,
+                acao='retirada',
+                usuario=request.user,
+                nome_cliente=form.cleaned_data['nome_cliente'],
+                telefone_cliente=form.cleaned_data['telefone_cliente']
+            )
+
+            return redirect('chave_list')
+
+    else:
+        form = RetiradaForm()
+
+    return render(request, 'imoveis/retirar_chave.html', {
+        'form': form,
+        'chave': chave
+    })
+
+def devolver_chave(request, pk):
+    chave = get_object_or_404(Chave, pk=pk)
+
+    chave.status = 'disponivel'
+    chave.save()
+
+    Movimentacao.objects.create(
+        chave=chave,
+        acao='devolucao',
+        usuario=request.user
+    )
+
+    return redirect('chave_list')
+

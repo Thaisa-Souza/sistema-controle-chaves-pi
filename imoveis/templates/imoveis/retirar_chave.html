@@ -1,0 +1,16 @@
+<h1>Retirar chave</h1>
+
+<p>
+    Imóvel:
+    {{ chave.imovel.codigo }}
+</p>
+
+<form method="POST">
+    {% csrf_token %}
+
+    {{ form.as_p }}
+
+    <button type="submit">
+        Confirmar retirada
+    </button>
+</form>

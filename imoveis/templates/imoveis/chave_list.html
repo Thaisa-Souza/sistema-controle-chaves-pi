@@ -10,8 +10,23 @@
     <p>
         {{ chave.imovel.codigo }} -
         {{ chave.status }}
+
+        {% if chave.status == 'disponivel' %}
+
+            <a href="{% url 'retirar_chave' chave.id %}">
+                Retirar
+            </a>
+
+        {% else %}
+
+            <a href="{% url 'devolver_chave' chave.id %}">
+                Devolver
+            </a>
+
+        {% endif %}
     </p>
 
 {% empty %}
     <p>Nenhuma chave cadastrada.</p>
 {% endfor %}
+
