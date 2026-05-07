@@ -25,4 +25,10 @@ path(
     name='devolver_chave'
 ),
 
+path(
+    'historico/',
+    views.historico_list,
+    name='historico_list'
+),
+
 ]

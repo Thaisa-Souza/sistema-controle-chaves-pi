@@ -1,0 +1,34 @@
+<h1>Histórico de movimentações</h1>
+
+<hr>
+
+{% for mov in movimentacoes %}
+
+    <p>
+        <strong>
+            {{ mov.chave.imovel.codigo }}
+        </strong>
+
+        -
+        {{ mov.acao }}
+
+        -
+        {{ mov.nome_cliente }}
+
+        -
+        {{ mov.telefone_cliente }}
+
+        -
+        {{ mov.usuario }}
+
+        -
+        {{ mov.data }}
+    </p>
+
+{% empty %}
+
+    <p>
+        Nenhuma movimentação registrada.
+    </p>
+
+{% endfor %}

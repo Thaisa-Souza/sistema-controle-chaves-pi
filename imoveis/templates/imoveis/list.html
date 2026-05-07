@@ -1,3 +1,14 @@
+<a href="{% url 'chave_list' %}">
+    Chaves
+</a>
+
+|
+
+<a href="{% url 'historico_list' %}">
+    Histórico
+</a>
+
+
 <h1>Imóveis</h1>
 
 <a href="{% url 'imovel_create' %}">Adicionar imóvel</a>
@@ -22,4 +33,5 @@
 {% empty %}
     <p>Nenhum imóvel cadastrado.</p>
 {% endfor %}
+
 

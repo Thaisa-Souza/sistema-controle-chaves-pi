@@ -116,3 +116,12 @@ def devolver_chave(request, pk):
 
     return redirect('chave_list')
 
+def historico_list(request):
+    movimentacoes = Movimentacao.objects.select_related(
+        'chave__imovel',
+        'usuario'
+    ).all().order_by('-data')
+
+    return render(request, 'imoveis/historico_list.html', {
+        'movimentacoes': movimentacoes
+    })
