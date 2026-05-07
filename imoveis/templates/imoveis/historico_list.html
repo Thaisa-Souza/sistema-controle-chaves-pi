@@ -1,5 +1,32 @@
 <h1>Histórico de movimentações</h1>
 
+<a href="{% url 'imovel_list' %}">
+    Imóveis
+</a>
+
+|
+
+<a href="{% url 'chave_list' %}">
+    Chaves
+</a>
+
+<hr>
+
+<form method="GET">
+
+    <input
+        type="text"
+        name="q"
+        placeholder="Buscar"
+        value="{{ query }}"
+    >
+
+    <button type="submit">
+        Buscar
+    </button>
+
+</form>
+
 <hr>
 
 {% for mov in movimentacoes %}
@@ -28,7 +55,7 @@
 {% empty %}
 
     <p>
-        Nenhuma movimentação registrada.
+        Nenhuma movimentação encontrada.
     </p>
 
 {% endfor %}

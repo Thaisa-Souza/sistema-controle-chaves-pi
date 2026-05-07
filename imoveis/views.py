@@ -2,15 +2,44 @@ from django.shortcuts import render, redirect
 from .models import Imovel, Chave, Movimentacao
 from .forms import ImovelForm, ChaveForm, RetiradaForm
 from django.shortcuts import get_object_or_404
-
+from django.db import models
+from django.db.models import Count
 
 
 def imovel_list(request):
-    imoveis = Imovel.objects.all().order_by('codigo')
+    query = request.GET.get('q', '')
+
+    status = request.GET.get('status', '')
+
+    imoveis = Imovel.objects.annotate(
+        total_visitas=Count(
+            'chave__movimentacao',
+            filter=models.Q(
+                chave__movimentacao__acao='retirada'
+            )
+        )
+    )
+
+    if query:
+        imoveis = imoveis.filter(
+            codigo__icontains=query
+        ) | imoveis.filter(
+            endereco__icontains=query
+        ) | imoveis.filter(
+            bairro__icontains=query
+        )
+
+    if status:
+        imoveis = imoveis.filter(status=status)
+
+    imoveis = imoveis.order_by('codigo')
 
     return render(request, 'imoveis/list.html', {
-        'imoveis': imoveis
+        'imoveis': imoveis,
+        'query': query,
+        'status_atual': status
     })
+
 
 
 def imovel_create(request):
@@ -117,11 +146,27 @@ def devolver_chave(request, pk):
     return redirect('chave_list')
 
 def historico_list(request):
+    query = request.GET.get('q', '')
+
     movimentacoes = Movimentacao.objects.select_related(
         'chave__imovel',
         'usuario'
-    ).all().order_by('-data')
+    ).all()
+
+    if query:
+        movimentacoes = movimentacoes.filter(
+            chave__imovel__codigo__icontains=query
+        ) | movimentacoes.filter(
+            nome_cliente__icontains=query
+        ) | movimentacoes.filter(
+            telefone_cliente__icontains=query
+        ) | movimentacoes.filter(
+            acao__icontains=query
+        )
+
+    movimentacoes = movimentacoes.order_by('-data')
 
     return render(request, 'imoveis/historico_list.html', {
-        'movimentacoes': movimentacoes
+        'movimentacoes': movimentacoes,
+        'query': query
     })

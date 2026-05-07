@@ -1,3 +1,5 @@
+<h1>Imóveis</h1>
+
 <a href="{% url 'chave_list' %}">
     Chaves
 </a>
@@ -8,18 +10,74 @@
     Histórico
 </a>
 
+<hr>
 
-<h1>Imóveis</h1>
+<form method="GET">
 
-<a href="{% url 'imovel_create' %}">Adicionar imóvel</a>
+    <input
+        type="text"
+        name="q"
+        placeholder="Buscar imóvel"
+        value="{{ query }}"
+    >
+
+    <select name="status">
+
+        <option value="">
+            Todos
+        </option>
+
+        <option value="disponivel">
+            Disponível
+        </option>
+
+        <option value="analise">
+            Em análise
+        </option>
+
+        <option value="alugado">
+            Alugado
+        </option>
+
+        <option value="inativo">
+            Inativo
+        </option>
+
+    </select>
+
+    <button type="submit">
+        Buscar
+    </button>
+
+</form>
+
+<hr>
+
+<a href="{% url 'imovel_create' %}">
+    Adicionar imóvel
+</a>
 
 <hr>
 
 {% for imovel in imoveis %}
+
     <p>
-        {{ imovel.codigo }} -
-        {{ imovel.endereco }} -
+        <strong>
+            {{ imovel.codigo }}
+        </strong>
+
+        -
+        {{ imovel.endereco }}
+
+        -
         {{ imovel.bairro }}
+
+        -
+        {{ imovel.status }}
+
+        -
+        Visitas:
+        {{ imovel.total_visitas }}
 
         <a href="{% url 'imovel_update' imovel.id %}">
             Editar
@@ -28,10 +86,13 @@
         <a href="{% url 'imovel_delete' imovel.id %}">
             Excluir
         </a>
+
     </p>
 
 {% empty %}
-    <p>Nenhum imóvel cadastrado.</p>
+
+    <p>
+        Nenhum imóvel encontrado.
+    </p>
+
 {% endfor %}
-
-
