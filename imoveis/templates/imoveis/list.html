@@ -1,103 +1,126 @@
-<h1>Imóveis</h1>
+{% extends "imoveis/base.html" %}
 
-<a href="{% url 'chave_list' %}">
-    Chaves
-</a>
+{% block content %}
 
-|
+<h1 class="mb-4">Imóveis</h1>
 
-<a href="{% url 'historico_list' %}">
-    Histórico
-</a>
-
-<hr>
-
-<form method="GET">
-
-    <input
-        type="text"
-        name="q"
-        placeholder="Buscar imóvel"
-        value="{{ query }}"
-    >
-
-    <select name="status">
-
-        <option value="">
-            Todos
-        </option>
-
-        <option value="disponivel">
-            Disponível
-        </option>
-
-        <option value="analise">
-            Em análise
-        </option>
-
-        <option value="alugado">
-            Alugado
-        </option>
-
-        <option value="inativo">
-            Inativo
-        </option>
-
-    </select>
-
-    <button type="submit">
-        Buscar
-    </button>
-
-</form>
-
-<hr>
-
-<a href="{% url 'imovel_create' %}">
+<a href="{% url 'imovel_create' %}" class="btn btn-success mb-3">
     Adicionar imóvel
 </a>
 
-<hr>
+<form method="GET" class="row g-2 mb-4">
 
-{% for imovel in imoveis %}
+    <div class="col-md-4">
+        <input
+            type="text"
+            name="q"
+            class="form-control"
+            placeholder="Buscar imóvel"
+            value="{{ query }}"
+        >
+    </div>
 
-    <p>
-        <strong>
-            {{ imovel.codigo }}
-        </strong>
+    <div class="col-md-3">
+        <select name="status" class="form-select">
 
-        -
-        {{ imovel.endereco }}
+            <option value="">
+                Todos os status
+            </option>
 
-        -
-        {{ imovel.bairro }}
+            <option value="disponivel">
+                Disponível
+            </option>
 
-        -
-        {{ imovel.status }}
+            <option value="analise">
+                Em análise
+            </option>
 
-        -
-        Visitas:
-        {{ imovel.total_visitas }}
+            <option value="alugado">
+                Alugado
+            </option>
 
-        <a href="{% url 'imovel_update' imovel.id %}">
-            Editar
-        </a>
+            <option value="inativo">
+                Inativo
+            </option>
 
-        {% if request.user.is_superuser or request.user.groups.all.0.name == 'Gerentes' %}
+        </select>
+    </div>
 
-        <a href="{% url 'imovel_delete' imovel.id %}">
-        Excluir
-        </a>
-        
-        {% endif %}
+    <div class="col-md-2">
+        <button type="submit" class="btn btn-primary w-100">
+            Buscar
+        </button>
+    </div>
 
+</form>
 
-    </p>
+<div class="table-responsive">
 
-{% empty %}
+<table class="table table-striped table-bordered align-middle">
 
-    <p>
-        Nenhum imóvel encontrado.
-    </p>
+    <thead class="table-primary">
 
-{% endfor %}
+        <tr>
+            <th>Código</th>
+            <th>Endereço</th>
+            <th>Bairro</th>
+            <th>Status</th>
+            <th>Visitas</th>
+            <th>Ações</th>
+        </tr>
+
+    </thead>
+
+    <tbody>
+
+        {% for imovel in imoveis %}
+
+        <tr>
+
+            <td>{{ imovel.codigo }}</td>
+
+            <td>{{ imovel.endereco }}</td>
+
+            <td>{{ imovel.bairro }}</td>
+
+            <td>{{ imovel.status }}</td>
+
+            <td>{{ imovel.total_visitas }}</td>
+
+            <td>
+
+                <a href="{% url 'imovel_update' imovel.id %}"
+                   class="btn btn-warning btn-sm">
+                    Editar
+                </a>
+
+                {% if request.user.is_superuser or request.user.groups.all.0.name == 'Gerentes' %}
+
+                <a href="{% url 'imovel_delete' imovel.id %}"
+                   class="btn btn-danger btn-sm">
+                    Excluir
+                </a>
+
+                {% endif %}
+
+            </td>
+
+        </tr>
+
+        {% empty %}
+
+        <tr>
+            <td colspan="6">
+                Nenhum imóvel encontrado.
+            </td>
+        </tr>
+
+        {% endfor %}
+
+    </tbody>
+
+</table>
+
+</div>
+
+{% endblock %}
