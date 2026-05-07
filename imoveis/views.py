@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
-from .models import Imovel
-from .forms import ImovelForm
+from .models import Imovel, Chave
+from .forms import ImovelForm, ChaveForm
 from django.shortcuts import get_object_or_404
 
 
@@ -51,4 +51,23 @@ def imovel_delete(request, pk):
 
     return render(request, 'imoveis/confirm_delete.html', {
         'imovel': imovel
+    })
+
+def chave_list(request):
+    chaves = Chave.objects.select_related('imovel').all()
+
+    return render(request, 'imoveis/chave_list.html', {
+        'chaves': chaves
+    })
+
+
+def chave_create(request):
+    form = ChaveForm(request.POST or None)
+
+    if form.is_valid():
+        form.save()
+        return redirect('chave_list')
+
+    return render(request, 'imoveis/chave_form.html', {
+        'form': form
     })

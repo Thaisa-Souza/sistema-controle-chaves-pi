@@ -1,0 +1,17 @@
+<h1>Chaves</h1>
+
+<a href="{% url 'chave_create' %}">
+    Adicionar chave
+</a>
+
+<hr>
+
+{% for chave in chaves %}
+    <p>
+        {{ chave.imovel.codigo }} -
+        {{ chave.status }}
+    </p>
+
+{% empty %}
+    <p>Nenhuma chave cadastrada.</p>
+{% endfor %}

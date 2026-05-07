@@ -8,4 +8,8 @@ urlpatterns = [
     path('editar/<int:pk>/', views.imovel_update, name='imovel_update'),
 
     path('excluir/<int:pk>/', views.imovel_delete, name='imovel_delete'),
+
+    path('chaves/', views.chave_list, name='chave_list'),
+
+    path('chaves/nova/', views.chave_create, name='chave_create'),
 ]
