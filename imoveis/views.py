@@ -107,23 +107,6 @@ def chave_list(request):
 
 
 @login_required
-def chave_create(request):
-    form = ChaveForm(request.POST or None)
-
-    if not request.user.is_superuser and not request.user.groups.filter(name='Gerentes').exists():
-        return redirect('chave_list')
-
-
-    if form.is_valid():
-        form.save()
-        return redirect('chave_list')
-
-    return render(request, 'imoveis/chave_form.html', {
-        'form': form
-    })
-
-
-@login_required
 def retirar_chave(request, pk):
     chave = get_object_or_404(Chave, pk=pk)
 

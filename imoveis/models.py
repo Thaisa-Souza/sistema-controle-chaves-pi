@@ -73,3 +73,26 @@ class Movimentacao(models.Model):
     def __str__(self):
         return f"{self.acao} - {self.chave.imovel.codigo}"
 
+
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+
+
+@receiver(post_save, sender=Imovel)
+def controlar_chave_do_imovel(sender, instance, created, **kwargs):
+    chave, criada = Chave.objects.get_or_create(
+        imovel=instance,
+        defaults={'status': 'disponivel'}
+    )
+
+    if instance.status == 'alugado':
+        chave.status = 'indisponivel'
+
+    elif instance.status == 'inativo':
+        chave.status = 'indisponivel'
+
+    elif instance.status == 'disponivel':
+        chave.status = 'disponivel'
+
+    chave.save()
+

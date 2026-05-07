@@ -11,8 +11,6 @@ urlpatterns = [
 
     path('chaves/', views.chave_list, name='chave_list'),
 
-    path('chaves/nova/', views.chave_create, name='chave_create'),
-
     path(
     'chaves/retirar/<int:pk>/',
     views.retirar_chave,
