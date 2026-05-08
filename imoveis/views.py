@@ -108,6 +108,10 @@ def chave_list(request):
     if status:
         chaves = chaves.filter(status=status)
 
+    paginator = Paginator(chaves, 10)
+    page = request.GET.get('page')
+    chaves = paginator.get_page(page)
+
     return render(request, 'imoveis/chave_list.html', {
         'chaves': chaves,
         'status_atual': status

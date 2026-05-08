@@ -181,4 +181,39 @@
 
 </div>
 
+{% if chaves.has_other_pages %}
+
+<nav class="mt-4">
+    <ul class="pagination justify-content-center">
+
+        {% if chaves.has_previous %}
+            <li class="page-item">
+                <a class="page-link"
+                   href="?page={{ chaves.previous_page_number }}&status={{ status_atual }}">
+                    Anterior
+                </a>
+            </li>
+        {% endif %}
+
+        <li class="page-item active">
+            <span class="page-link">
+                {{ chaves.number }} / {{ chaves.paginator.num_pages }}
+            </span>
+        </li>
+
+        {% if chaves.has_next %}
+            <li class="page-item">
+                <a class="page-link"
+                   href="?page={{ chaves.next_page_number }}&status={{ status_atual }}">
+                    Próximo
+                </a>
+            </li>
+        {% endif %}
+
+    </ul>
+</nav>
+
+{% endif %}
+
+
 {% endblock %}
