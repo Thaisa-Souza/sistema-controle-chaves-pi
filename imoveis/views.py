@@ -1,25 +1,23 @@
-from django.shortcuts import render, redirect
-from .models import Imovel, Chave, Movimentacao
-from .forms import ImovelForm, RetiradaForm
-from django.shortcuts import get_object_or_404
-from django.db import models
-from django.db.models import Count
+from django.shortcuts import render, redirect, get_object_or_404
+from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.db import models
+from django.db.models import Count
+
+from .models import Imovel, Chave, Movimentacao
+from .forms import ImovelForm, RetiradaForm
 
 
 @login_required
 def imovel_list(request):
     query = request.GET.get('q', '')
-
     status = request.GET.get('status', '')
 
     imoveis = Imovel.objects.annotate(
         total_visitas=Count(
             'chave__movimentacao',
-            filter=models.Q(
-                chave__movimentacao__acao='retirada'
-            )
+            filter=models.Q(chave__movimentacao__acao='retirada')
         )
     )
 
@@ -36,6 +34,10 @@ def imovel_list(request):
         imoveis = imoveis.filter(status=status)
 
     imoveis = imoveis.order_by('codigo')
+
+    paginator = Paginator(imoveis, 6)
+    page = request.GET.get('page')
+    imoveis = paginator.get_page(page)
 
     return render(request, 'imoveis/list.html', {
         'imoveis': imoveis,
@@ -54,7 +56,8 @@ def imovel_create(request):
         return redirect('imovel_list')
 
     return render(request, 'imoveis/form.html', {
-        'form': form
+        'form': form,
+        'title': 'Adicionar imóvel'
     })
 
 
@@ -74,13 +77,13 @@ def imovel_update(request, pk):
         return redirect('imovel_list')
 
     return render(request, 'imoveis/form.html', {
-        'form': form
+        'form': form,
+        'title': 'Editar imóvel'
     })
 
 
 @login_required
 def imovel_delete(request, pk):
-
     if not request.user.is_superuser and not request.user.groups.filter(name='Gerentes').exists():
         return redirect('imovel_list')
 
@@ -96,13 +99,18 @@ def imovel_delete(request, pk):
     })
 
 
-
 @login_required
 def chave_list(request):
-    chaves = Chave.objects.select_related('imovel').all()
+    status = request.GET.get('status', '')
+
+    chaves = Chave.objects.select_related('imovel').all().order_by('imovel__codigo')
+
+    if status:
+        chaves = chaves.filter(status=status)
 
     return render(request, 'imoveis/chave_list.html', {
-        'chaves': chaves
+        'chaves': chaves,
+        'status_atual': status
     })
 
 
@@ -110,14 +118,15 @@ def chave_list(request):
 def retirar_chave(request, pk):
     chave = get_object_or_404(Chave, pk=pk)
 
+    if chave.status != 'disponivel':
+        return redirect('chave_list')
+
     if request.method == 'POST':
         form = RetiradaForm(request.POST)
 
         if form.is_valid():
-
             chave.status = 'retirada'
             chave.save()
-            messages.success(request, 'Chave retirada com sucesso!')
 
             Movimentacao.objects.create(
                 chave=chave,
@@ -127,6 +136,7 @@ def retirar_chave(request, pk):
                 telefone_cliente=form.cleaned_data['telefone_cliente']
             )
 
+            messages.success(request, 'Chave retirada com sucesso!')
             return redirect('chave_list')
 
     else:
@@ -142,16 +152,26 @@ def retirar_chave(request, pk):
 def devolver_chave(request, pk):
     chave = get_object_or_404(Chave, pk=pk)
 
+    if chave.status == 'disponivel':
+        return redirect('chave_list')
+
+    ultima_retirada = Movimentacao.objects.filter(
+        chave=chave,
+        acao='retirada'
+    ).order_by('-data').first()
+
     chave.status = 'disponivel'
     chave.save()
-    messages.success(request, 'Chave devolvida com sucesso!')
 
     Movimentacao.objects.create(
         chave=chave,
         acao='devolucao',
-        usuario=request.user
+        usuario=request.user,
+        nome_cliente=ultima_retirada.nome_cliente if ultima_retirada else '',
+        telefone_cliente=ultima_retirada.telefone_cliente if ultima_retirada else ''
     )
 
+    messages.success(request, 'Chave devolvida com sucesso!')
     return redirect('chave_list')
 
 
@@ -167,6 +187,10 @@ def historico_list(request):
     if query:
         movimentacoes = movimentacoes.filter(
             chave__imovel__codigo__icontains=query
+        ) | movimentacoes.filter(
+            chave__imovel__endereco__icontains=query
+        ) | movimentacoes.filter(
+            chave__imovel__bairro__icontains=query
         ) | movimentacoes.filter(
             nome_cliente__icontains=query
         ) | movimentacoes.filter(

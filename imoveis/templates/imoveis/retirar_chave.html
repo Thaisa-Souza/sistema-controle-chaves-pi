@@ -2,21 +2,34 @@
 
 {% block content %}
 
-<div class="card shadow-sm">
+<div class="card">
 
-    <div class="card-body">
+    <div class="card-body p-4">
 
-        <h2 class="mb-4">
+        <h2 class="mb-3 fw-bold">
             Retirar chave
         </h2>
 
-        <p>
-            <strong>
-                Imóvel:
-            </strong>
-
-            {{ chave.imovel.codigo }}
+        <p class="text-muted mb-4">
+            Informe os dados do cliente que ficará com a chave.
         </p>
+
+        <div class="alert alert-light border">
+
+            <strong>Imóvel:</strong>
+            {{ chave.imovel.codigo }}
+
+            <br>
+
+            <strong>Endereço:</strong>
+            {{ chave.imovel.endereco }}
+
+            <br>
+
+            <strong>Bairro:</strong>
+            {{ chave.imovel.bairro }}
+
+        </div>
 
         <form method="POST">
 
@@ -24,10 +37,17 @@
 
             {{ form.as_p }}
 
-            <button type="submit"
-                    class="btn btn-primary">
-                Confirmar retirada
-            </button>
+            <div class="d-flex gap-2 flex-wrap mt-4">
+
+                <button type="submit" class="btn btn-primary">
+                    Confirmar retirada
+                </button>
+
+                <a href="{% url 'chave_list' %}" class="btn btn-secondary">
+                    Cancelar
+                </a>
+
+            </div>
 
         </form>
 

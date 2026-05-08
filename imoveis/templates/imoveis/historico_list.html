@@ -2,91 +2,135 @@
 
 {% block content %}
 
-<h1 class="mb-4 fw-bold">
-    Histórico de movimentações
-</h1>
+<h1 class="mb-4 fw-bold">Histórico de movimentações</h1>
 
 <form method="GET" class="row g-2 mb-4">
 
-    <div class="col-md-4">
-
-        <input
-            type="text"
-            name="q"
-            class="form-control"
-            placeholder="Buscar"
-            value="{{ query }}"
-        >
-
+    <div class="col-md-6">
+        <input type="text"
+               name="q"
+               value="{{ query }}"
+               class="form-control"
+               placeholder="Buscar por imóvel, cliente, telefone ou ação...">
     </div>
 
     <div class="col-md-2">
-
-        <button type="submit"
-                class="btn btn-primary w-100">
+        <button class="btn btn-primary w-100">
             Buscar
         </button>
+    </div>
 
+    <div class="col-md-2">
+        <a href="{% url 'historico_list' %}" class="btn btn-secondary w-100">
+            Limpar
+        </a>
     </div>
 
 </form>
 
-<div class="row">
+<div class="d-none d-md-block">
 
-{% for mov in movimentacoes %}
+    <div class="table-responsive">
 
-    <div class="col-md-6 mb-3">
+        <table class="table table-hover align-middle bg-white shadow-sm">
 
-        <div class="card shadow-sm h-100 border-0">
+            <thead>
+                <tr>
+                    <th>Imóvel</th>
+                    <th>Endereço</th>
+                    <th>Ação</th>
+                    <th>Cliente</th>
+                    <th>Telefone</th>
+                    <th>Usuário</th>
+                    <th>Data</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for mov in movimentacoes %}
+
+                    <tr>
+                        <td>{{ mov.chave.imovel.codigo }}</td>
+                        <td>{{ mov.chave.imovel.endereco }}</td>
+
+                        <td>
+                            {% if mov.acao == 'retirada' %}
+                                <span class="badge bg-primary">Retirada</span>
+                            {% elif mov.acao == 'devolucao' %}
+                                <span class="badge bg-success">Devolução</span>
+                            {% else %}
+                                <span class="badge bg-secondary">{{ mov.acao }}</span>
+                            {% endif %}
+                        </td>
+
+                        <td>{{ mov.nome_cliente|default:"-" }}</td>
+                        <td>{{ mov.telefone_cliente|default:"-" }}</td>
+                        <td>{{ mov.usuario.username|default:"-" }}</td>
+                        <td>{{ mov.data|date:"d/m/Y H:i" }}</td>
+                    </tr>
+
+                {% empty %}
+
+                    <tr>
+                        <td colspan="7" class="text-center text-muted">
+                            Nenhuma movimentação encontrada.
+                        </td>
+                    </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+<div class="d-block d-md-none">
+
+    {% for mov in movimentacoes %}
+
+        <div class="card mb-3">
 
             <div class="card-body">
 
-                <h5 class="card-title">
-                    {{ mov.chave.imovel.codigo }}
-                </h5>
+                <h5 class="mb-1">{{ mov.chave.imovel.codigo }}</h5>
 
-                <p class="card-text">
+                <p class="mb-1">{{ mov.chave.imovel.endereco }}</p>
 
-                    <strong>Ação:</strong>
-                    {{ mov.acao }}
+                <small class="text-muted">
+                    Bairro: {{ mov.chave.imovel.bairro }}
+                </small>
 
-                    <br>
+                <div class="mt-2">
+                    {% if mov.acao == 'retirada' %}
+                        <span class="badge bg-primary">Retirada</span>
+                    {% elif mov.acao == 'devolucao' %}
+                        <span class="badge bg-success">Devolução</span>
+                    {% else %}
+                        <span class="badge bg-secondary">{{ mov.acao }}</span>
+                    {% endif %}
+                </div>
 
-                    <strong>Cliente:</strong>
-                    {{ mov.nome_cliente }}
-
-                    <br>
-
-                    <strong>Telefone:</strong>
-                    {{ mov.telefone_cliente }}
-
-                    <br>
-
-                    <strong>Usuário:</strong>
-                    {{ mov.usuario }}
-
-                    <br>
-
-                    <strong>Data:</strong>
-                    {{ mov.data }}
-
-                </p>
+                <div class="mt-3">
+                    <strong>Cliente:</strong> {{ mov.nome_cliente|default:"-" }}<br>
+                    <strong>Telefone:</strong> {{ mov.telefone_cliente|default:"-" }}<br>
+                    <strong>Usuário:</strong> {{ mov.usuario.username|default:"-" }}<br>
+                    <strong>Data:</strong> {{ mov.data|date:"d/m/Y H:i" }}
+                </div>
 
             </div>
 
         </div>
 
-    </div>
+    {% empty %}
 
-{% empty %}
+        <p class="text-muted">Nenhuma movimentação encontrada.</p>
 
-<p>
-    Nenhuma movimentação encontrada.
-</p>
-
-{% endfor %}
+    {% endfor %}
 
 </div>
 
 {% endblock %}
-

@@ -2,158 +2,262 @@
 
 {% block content %}
 
-<h1 class="mb-4 fw-bold">Imóveis</h1>
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <h1 class="fw-bold mb-0">Imóveis</h1>
 
-<a href="{% url 'imovel_create' %}" class="btn btn-success mb-3">
-    Adicionar imóvel
-</a>
+    <a href="{% url 'imovel_create' %}" class="btn btn-success">
+        Adicionar imóvel
+    </a>
+</div>
 
 <form method="GET" class="row g-2 mb-4">
 
-    <div class="col-md-4">
-        <input
-            type="text"
-            name="q"
-            class="form-control"
-            placeholder="Buscar imóvel"
-            value="{{ query }}"
-        >
+    <div class="col-md-5">
+        <input type="text"
+               name="q"
+               value="{{ query }}"
+               class="form-control"
+               placeholder="Buscar por código, endereço ou bairro...">
     </div>
 
     <div class="col-md-3">
         <select name="status" class="form-select">
+            <option value="">Todos os status</option>
 
-            <option value="">
-                Todos os status
-            </option>
-
-            <option value="disponivel">
+            <option value="disponivel" {% if status_atual == 'disponivel' %}selected{% endif %}>
                 Disponível
             </option>
 
-            <option value="analise">
+            <option value="analise" {% if status_atual == 'analise' %}selected{% endif %}>
                 Em análise
             </option>
 
-            <option value="alugado">
+            <option value="alugado" {% if status_atual == 'alugado' %}selected{% endif %}>
                 Alugado
             </option>
 
-            <option value="inativo">
+            <option value="inativo" {% if status_atual == 'inativo' %}selected{% endif %}>
                 Inativo
             </option>
-
         </select>
     </div>
 
     <div class="col-md-2">
-        <button type="submit" class="btn btn-primary w-100">
+        <button class="btn btn-primary w-100">
             Buscar
         </button>
     </div>
 
+    <div class="col-md-2">
+        <a href="{% url 'imovel_list' %}" class="btn btn-secondary w-100">
+            Limpar
+        </a>
+    </div>
+
 </form>
 
-<div class="row">
+<div class="d-none d-md-block">
 
-{% for imovel in imoveis %}
+    <div class="table-responsive">
 
-    <div class="col-md-6 mb-3">
+        <table class="table table-hover align-middle bg-white shadow-sm">
 
-        <div class="card shadow-sm h-100 border-0">
+            <thead>
+                <tr>
+                    <th>Foto</th>
+                    <th>Código</th>
+                    <th>Endereço</th>
+                    <th>Bairro</th>
+                    <th>Tipo</th>
+                    <th>Status</th>
+                    <th class="text-center">Visitas</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for imovel in imoveis %}
+
+                    <tr>
+                        <td>
+                            {% if imovel.foto %}
+                                <img src="{{ imovel.foto.url }}"
+                                     width="70"
+                                     height="55"
+                                     class="rounded shadow-sm"
+                                     style="object-fit: cover;">
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+
+                        <td>{{ imovel.codigo }}</td>
+                        <td>{{ imovel.endereco }}</td>
+                        <td>{{ imovel.bairro }}</td>
+                        <td>{{ imovel.tipo.nome|default:"-" }}</td>
+
+                        <td>
+                            {% if imovel.status == 'disponivel' %}
+                                <span class="badge bg-success">Disponível</span>
+                            {% elif imovel.status == 'analise' %}
+                                <span class="badge bg-warning text-dark">Em análise</span>
+                            {% elif imovel.status == 'alugado' %}
+                                <span class="badge bg-primary">Alugado</span>
+                            {% elif imovel.status == 'inativo' %}
+                                <span class="badge bg-secondary">Inativo</span>
+                            {% else %}
+                                <span class="badge bg-light text-dark">{{ imovel.status }}</span>
+                            {% endif %}
+                        </td>
+
+                        <td class="text-center">
+                            {{ imovel.total_visitas }}
+                        </td>
+
+                        <td>
+                            <div class="d-flex gap-2 flex-wrap">
+                                <a href="{% url 'imovel_update' imovel.pk %}"
+                                   class="btn btn-warning btn-sm">
+                                    Editar
+                                </a>
+
+                                {% if user.is_superuser or 'Gerentes' in user.groups.all|join:', ' %}
+                                    <a href="{% url 'imovel_delete' imovel.pk %}"
+                                       class="btn btn-danger btn-sm">
+                                        Excluir
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+
+                {% empty %}
+
+                    <tr>
+                        <td colspan="8" class="text-center text-muted">
+                            Nenhum imóvel encontrado.
+                        </td>
+                    </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+<div class="d-block d-md-none">
+
+    {% for imovel in imoveis %}
+
+        <div class="card mb-3">
 
             <div class="card-body">
 
                 {% if imovel.foto %}
+                    <img src="{{ imovel.foto.url }}"
+                         class="img-fluid rounded mb-3"
+                         style="height: 200px; width: 100%; object-fit: cover;">
+                {% endif %}
 
-                  <img src="{{ imovel.foto.url }}"
-                    class="img-fluid rounded mb-3"
-                    style="height: 200px;
-                      width: 100%;
-                      object-fit: cover;">
+                <h5 class="mb-1">{{ imovel.codigo }}</h5>
 
-                 {% endif %}
+                <p class="mb-1">{{ imovel.endereco }}</p>
 
-                <h5 class="card-title">
-                    {{ imovel.codigo }}
-                </h5>
+                <small class="text-muted">
+                    Bairro: {{ imovel.bairro }}
+                </small>
 
-                <p class="card-text">
+                <br>
 
-                    <strong>Endereço:</strong>
-                    {{ imovel.endereco }}
+                <small class="text-muted">
+                    Tipo: {{ imovel.tipo.nome|default:"-" }}
+                </small>
 
-                    <br>
+                <div class="mt-3">
 
-                    <strong>Bairro:</strong>
-                    {{ imovel.bairro }}
-
-                    <br>
-
-                    <strong>Status:</strong>
                     {% if imovel.status == 'disponivel' %}
-
-                       <span class="badge bg-success">
-                       Disponível
-                       </span>
-
+                        <span class="badge bg-success">Disponível</span>
                     {% elif imovel.status == 'analise' %}
-
-                       <span class="badge bg-warning text-dark">
-                       Em análise
-                       </span>
-
+                        <span class="badge bg-warning text-dark">Em análise</span>
                     {% elif imovel.status == 'alugado' %}
-
-                       <span class="badge bg-danger">
-                        Alugado
-                       </span>
-
+                        <span class="badge bg-primary">Alugado</span>
+                    {% elif imovel.status == 'inativo' %}
+                        <span class="badge bg-secondary">Inativo</span>
                     {% else %}
-
-                       <span class="badge bg-secondary">
-                        Inativo
-                       </span>
-
+                        <span class="badge bg-light text-dark">{{ imovel.status }}</span>
                     {% endif %}
 
+                    <span class="badge bg-info text-dark">
+                        Visitas: {{ imovel.total_visitas }}
+                    </span>
 
-                    <br>
+                </div>
 
-                    <strong>Visitas:</strong>
-                    {{ imovel.total_visitas }}
+                <div class="mt-3 d-flex flex-wrap gap-2">
 
-                </p>
+                    <a href="{% url 'imovel_update' imovel.pk %}"
+                       class="btn btn-warning btn-sm">
+                        Editar
+                    </a>
 
-                <a href="{% url 'imovel_update' imovel.id %}"
-                   class="btn btn-warning btn-sm">
-                    Editar
-                </a>
+                    {% if user.is_superuser or 'Gerentes' in user.groups.all|join:', ' %}
+                        <a href="{% url 'imovel_delete' imovel.pk %}"
+                           class="btn btn-danger btn-sm">
+                            Excluir
+                        </a>
+                    {% endif %}
 
-                {% if request.user.is_superuser or request.user.groups.all.0.name == 'Gerentes' %}
-
-                <a href="{% url 'imovel_delete' imovel.id %}"
-                   class="btn btn-danger btn-sm">
-                    Excluir
-                </a>
-
-                {% endif %}
+                </div>
 
             </div>
 
         </div>
 
-    </div>
+    {% empty %}
 
-{% empty %}
+        <p class="text-muted">Nenhum imóvel encontrado.</p>
 
-<p>
-    Nenhum imóvel encontrado.
-</p>
-
-{% endfor %}
+    {% endfor %}
 
 </div>
 
+{% if imoveis.has_other_pages %}
+
+<nav class="mt-4">
+    <ul class="pagination justify-content-center">
+
+        {% if imoveis.has_previous %}
+            <li class="page-item">
+                <a class="page-link"
+                   href="?page={{ imoveis.previous_page_number }}&q={{ query }}&status={{ status_atual }}">
+                    Anterior
+                </a>
+            </li>
+        {% endif %}
+
+        <li class="page-item active">
+            <span class="page-link">
+                {{ imoveis.number }} / {{ imoveis.paginator.num_pages }}
+            </span>
+        </li>
+
+        {% if imoveis.has_next %}
+            <li class="page-item">
+                <a class="page-link"
+                   href="?page={{ imoveis.next_page_number }}&q={{ query }}&status={{ status_atual }}">
+                    Próximo
+                </a>
+            </li>
+        {% endif %}
+
+    </ul>
+</nav>
+
+{% endif %}
 
 {% endblock %}
