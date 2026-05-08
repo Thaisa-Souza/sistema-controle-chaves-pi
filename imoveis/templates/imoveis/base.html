@@ -118,19 +118,23 @@
 
             <div class="ms-auto d-flex gap-2 mt-3 mt-lg-0">
 
-                <a href="{% url 'dashboard' %}" class="btn btn-light btn-sm">
+                <a href="{% url 'dashboard' %}"
+                   class="btn btn-sm {% if request.resolver_match.url_name == 'dashboard' %}btn-dark text-white{% else %}btn-light{% endif %}">
                     Dashboard
                 </a>
 
-                <a href="{% url 'imovel_list' %}" class="btn btn-light btn-sm">
-                    Imóveis
-                </a>
-
-                <a href="{% url 'chave_list' %}" class="btn btn-light btn-sm">
+                <a href="{% url 'chave_list' %}"
+                   class="btn btn-sm {% if request.resolver_match.url_name == 'chave_list' or request.resolver_match.url_name == 'retirar_chave' or request.resolver_match.url_name == 'devolver_chave' %}btn-dark text-white{% else %}btn-light{% endif %}">
                     Chaves
                 </a>
 
-                <a href="{% url 'historico_list' %}" class="btn btn-light btn-sm">
+                <a href="{% url 'imovel_list' %}"
+                   class="btn btn-sm {% if request.resolver_match.url_name == 'imovel_list' or request.resolver_match.url_name == 'imovel_create' or request.resolver_match.url_name == 'imovel_update' or request.resolver_match.url_name == 'imovel_delete' %}btn-dark text-white{% else %}btn-light{% endif %}">
+                    Imóveis
+                </a>
+
+                <a href="{% url 'historico_list' %}"
+                   class="btn btn-sm {% if request.resolver_match.url_name == 'historico_list' %}btn-dark text-white{% else %}btn-light{% endif %}">
                     Histórico
                 </a>
 
