@@ -203,6 +203,7 @@ def devolver_chave(request, pk):
 @login_required
 def historico_list(request):
     query = request.GET.get('q', '')
+    query_sem_acento = query.replace('ç', 'c').replace('ã', 'a').replace('õ', 'o')
 
     movimentacoes = Movimentacao.objects.select_related(
         'chave__imovel',
@@ -220,7 +221,8 @@ def historico_list(request):
             models.Q(nome_cliente__icontains=query) |
             models.Q(telefone_cliente__icontains=query) |
             models.Q(usuario__username__icontains=query) |
-            models.Q(acao__icontains=query)
+            models.Q(acao__icontains=query) |
+            models.Q(acao__icontains=query_sem_acento)
         )
 
     movimentacoes = movimentacoes.order_by('-data')
