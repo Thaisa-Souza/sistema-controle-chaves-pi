@@ -1,0 +1,64 @@
+{% extends "imoveis/base.html" %}
+
+{% block content %}
+
+<div class="row justify-content-center">
+
+    <div class="col-12 col-md-8 col-lg-6">
+
+        <div class="card">
+
+            <div class="card-body p-4 text-center">
+
+                <h2 class="fw-bold mb-3">
+                    Confirmar devolução
+                </h2>
+
+                <p class="mb-1">
+                    Tem certeza que deseja registrar a devolução desta chave?
+                </p>
+
+                <p class="text-muted mb-4">
+                    Essa ação ficará salva no histórico de movimentações.
+                </p>
+
+                <div class="alert alert-light border text-start">
+
+                    <strong>Imóvel:</strong> {{ chave.imovel.codigo }}<br>
+                    <strong>Endereço:</strong> {{ chave.imovel.endereco }}<br>
+                    <strong>Bairro:</strong> {{ chave.imovel.bairro }}<br>
+
+                    {% if ultima_retirada %}
+                        <strong>Cliente:</strong> {{ ultima_retirada.nome_cliente }}<br>
+                        <strong>Telefone:</strong> {{ ultima_retirada.telefone_cliente }}
+                    {% endif %}
+
+                </div>
+
+                <form method="POST">
+
+                    {% csrf_token %}
+
+                    <div class="d-flex justify-content-center gap-2 flex-wrap mt-4">
+
+                        <button type="submit" class="btn btn-success">
+                            Sim, registrar devolução
+                        </button>
+
+                        <a href="{% url 'chave_list' %}" class="btn btn-secondary">
+                            Cancelar
+                        </a>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

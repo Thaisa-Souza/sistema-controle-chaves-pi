@@ -164,19 +164,25 @@ def devolver_chave(request, pk):
         acao='retirada'
     ).order_by('-data').first()
 
-    chave.status = 'disponivel'
-    chave.save()
+    if request.method == 'POST':
+        chave.status = 'disponivel'
+        chave.save()
 
-    Movimentacao.objects.create(
-        chave=chave,
-        acao='devolucao',
-        usuario=request.user,
-        nome_cliente=ultima_retirada.nome_cliente if ultima_retirada else '',
-        telefone_cliente=ultima_retirada.telefone_cliente if ultima_retirada else ''
-    )
+        Movimentacao.objects.create(
+            chave=chave,
+            acao='devolucao',
+            usuario=request.user,
+            nome_cliente=ultima_retirada.nome_cliente if ultima_retirada else '',
+            telefone_cliente=ultima_retirada.telefone_cliente if ultima_retirada else ''
+        )
 
-    messages.success(request, 'Chave devolvida com sucesso!')
-    return redirect('chave_list')
+        messages.success(request, 'Chave devolvida com sucesso!')
+        return redirect('chave_list')
+
+    return render(request, 'imoveis/devolver_chave.html', {
+        'chave': chave,
+        'ultima_retirada': ultima_retirada
+    })
 
 
 @login_required
