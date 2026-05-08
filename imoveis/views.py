@@ -8,6 +8,9 @@ from django.db.models import Count
 from .models import Imovel, Chave, Movimentacao
 from .forms import ImovelForm, RetiradaForm
 
+def usuario_eh_gerente(user):
+    return user.is_superuser or user.groups.filter(name='Gerentes').exists()
+
 
 @login_required
 def imovel_list(request):
@@ -48,6 +51,11 @@ def imovel_list(request):
 
 @login_required
 def imovel_create(request):
+
+    if not usuario_eh_gerente(request.user):
+        messages.error(request, 'Você não tem permissão para adicionar imóveis.')
+        return redirect('imovel_list')
+
     form = ImovelForm(request.POST or None, request.FILES or None)
 
     if form.is_valid():
@@ -63,6 +71,11 @@ def imovel_create(request):
 
 @login_required
 def imovel_update(request, pk):
+
+    if not usuario_eh_gerente(request.user):
+        messages.error(request, 'Você não tem permissão para editar imóveis.')
+        return redirect('imovel_list')
+
     imovel = get_object_or_404(Imovel, pk=pk)
 
     form = ImovelForm(
@@ -84,7 +97,9 @@ def imovel_update(request, pk):
 
 @login_required
 def imovel_delete(request, pk):
-    if not request.user.is_superuser and not request.user.groups.filter(name='Gerentes').exists():
+
+    if not usuario_eh_gerente(request.user):
+        messages.error(request, 'Você não tem permissão para excluir imóveis.')
         return redirect('imovel_list')
 
     imovel = get_object_or_404(Imovel, pk=pk)

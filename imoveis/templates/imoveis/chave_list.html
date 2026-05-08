@@ -118,15 +118,19 @@
                             {% if chave.status == 'disponivel' %}
 
                                 <a href="{% url 'retirar_chave' chave.pk %}"
-                                   class="btn btn-primary btn-sm">
+                                   class="btn btn-primary btn-sm mobile-action-btn">
+
                                     Retirar
+
                                 </a>
 
                             {% elif chave.status == 'retirada' %}
 
                                 <a href="{% url 'devolver_chave' chave.pk %}"
-                                   class="btn btn-success btn-sm">
+                                    class="btn btn-success btn-sm mobile-action-btn">
+
                                     Devolver
+
                                 </a>
 
                             {% else %}
@@ -236,7 +240,7 @@
                     {% if chave.status == 'disponivel' %}
 
                         <a href="{% url 'retirar_chave' chave.pk %}"
-                           class="btn btn-primary btn-sm">
+                           class="btn btn-primary btn-sm mobile-action-btn">
 
                             Retirar
 
@@ -245,7 +249,7 @@
                     {% elif chave.status == 'retirada' %}
 
                         <a href="{% url 'devolver_chave' chave.pk %}"
-                           class="btn btn-success btn-sm">
+                           class="btn btn-success btn-sm mobile-action-btn">
 
                             Devolver
 
