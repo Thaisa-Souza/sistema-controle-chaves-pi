@@ -181,27 +181,51 @@ def historico_list(request):
 
     movimentacoes = Movimentacao.objects.select_related(
         'chave__imovel',
+        'chave__imovel__tipo',
         'usuario'
     ).all()
 
     if query:
         movimentacoes = movimentacoes.filter(
-            chave__imovel__codigo__icontains=query
-        ) | movimentacoes.filter(
-            chave__imovel__endereco__icontains=query
-        ) | movimentacoes.filter(
-            chave__imovel__bairro__icontains=query
-        ) | movimentacoes.filter(
-            nome_cliente__icontains=query
-        ) | movimentacoes.filter(
-            telefone_cliente__icontains=query
-        ) | movimentacoes.filter(
-            acao__icontains=query
+            models.Q(chave__imovel__codigo__icontains=query) |
+            models.Q(chave__imovel__endereco__icontains=query) |
+            models.Q(chave__imovel__bairro__icontains=query) |
+            models.Q(chave__imovel__tipo__nome__icontains=query) |
+            models.Q(chave__imovel__status__icontains=query) |
+            models.Q(nome_cliente__icontains=query) |
+            models.Q(telefone_cliente__icontains=query) |
+            models.Q(usuario__username__icontains=query) |
+            models.Q(acao__icontains=query)
         )
 
     movimentacoes = movimentacoes.order_by('-data')
 
+    paginator = Paginator(movimentacoes, 10)
+    page = request.GET.get('page')
+    movimentacoes = paginator.get_page(page)
+
     return render(request, 'imoveis/historico_list.html', {
         'movimentacoes': movimentacoes,
         'query': query
+    })
+
+
+@login_required
+def dashboard(request):
+    total_imoveis = Imovel.objects.count()
+    chaves_disponiveis = Chave.objects.filter(status='disponivel').count()
+    chaves_retiradas = Chave.objects.filter(status='retirada').count()
+    total_visitas = Movimentacao.objects.filter(acao='retirada').count()
+
+    ultimas_movimentacoes = Movimentacao.objects.select_related(
+        'chave__imovel',
+        'usuario'
+    ).order_by('-data')[:5]
+
+    return render(request, 'imoveis/dashboard.html', {
+        'total_imoveis': total_imoveis,
+        'chaves_disponiveis': chaves_disponiveis,
+        'chaves_retiradas': chaves_retiradas,
+        'total_visitas': total_visitas,
+        'ultimas_movimentacoes': ultimas_movimentacoes,
     })

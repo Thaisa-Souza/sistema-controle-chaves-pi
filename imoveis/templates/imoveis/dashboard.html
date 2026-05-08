@@ -1,0 +1,186 @@
+{% extends "imoveis/base.html" %}
+
+{% block content %}
+
+<div class="mb-4">
+
+    <h1 class="fw-bold mb-1">
+        Dashboard
+    </h1>
+
+    <p class="text-muted">
+        Visão geral do controle de chaves da imobiliária.
+    </p>
+
+</div>
+
+<div class="row g-3 mb-4">
+
+    <div class="col-12 col-sm-6 col-lg-3">
+
+        <div class="card h-100">
+
+            <div class="card-body">
+
+                <p class="text-muted mb-1">
+                    Total de imóveis
+                </p>
+
+                <h2 class="fw-bold mb-0">
+                    {{ total_imoveis }}
+                </h2>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-12 col-sm-6 col-lg-3">
+
+        <div class="card h-100">
+
+            <div class="card-body">
+
+                <p class="text-muted mb-1">
+                    Chaves disponíveis
+                </p>
+
+                <h2 class="fw-bold text-success mb-0">
+                    {{ chaves_disponiveis }}
+                </h2>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-12 col-sm-6 col-lg-3">
+
+        <div class="card h-100">
+
+            <div class="card-body">
+
+                <p class="text-muted mb-1">
+                    Chaves retiradas
+                </p>
+
+                <h2 class="fw-bold text-danger mb-0">
+                    {{ chaves_retiradas }}
+                </h2>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-12 col-sm-6 col-lg-3">
+
+        <div class="card h-100">
+
+            <div class="card-body">
+
+                <p class="text-muted mb-1">
+                    Total de visitas
+                </p>
+
+                <h2 class="fw-bold text-primary mb-0">
+                    {{ total_visitas }}
+                </h2>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<div class="card">
+
+    <div class="card-body p-4">
+
+        <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+
+            <h4 class="fw-bold mb-0">
+                Últimas movimentações
+            </h4>
+
+            <a href="{% url 'historico_list' %}" class="btn btn-primary btn-sm">
+                Ver histórico completo
+            </a>
+
+        </div>
+
+        <div class="table-responsive">
+
+            <table class="table table-hover align-middle mb-0">
+
+                <thead>
+                    <tr>
+                        <th>Imóvel</th>
+                        <th>Ação</th>
+                        <th>Cliente</th>
+                        <th>Usuário</th>
+                        <th>Data</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for mov in ultimas_movimentacoes %}
+
+                        <tr>
+                            <td>
+                                <strong>{{ mov.chave.imovel.codigo }}</strong><br>
+                                <small class="text-muted">
+                                    {{ mov.chave.imovel.endereco }}
+                                </small>
+                            </td>
+
+                            <td>
+                                {% if mov.acao == 'retirada' %}
+                                    <span class="badge bg-primary">Retirada</span>
+                                {% elif mov.acao == 'devolucao' %}
+                                    <span class="badge bg-success">Devolução</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">{{ mov.acao }}</span>
+                                {% endif %}
+                            </td>
+
+                            <td>
+                                {{ mov.nome_cliente|default:"-" }}
+                            </td>
+
+                            <td>
+                                {{ mov.usuario.username|default:"-" }}
+                            </td>
+
+                            <td>
+                                {{ mov.data|date:"d/m/Y H:i" }}
+                            </td>
+                        </tr>
+
+                    {% empty %}
+
+                        <tr>
+                            <td colspan="5" class="text-center text-muted">
+                                Nenhuma movimentação registrada ainda.
+                            </td>
+                        </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

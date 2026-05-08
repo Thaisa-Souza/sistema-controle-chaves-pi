@@ -133,4 +133,38 @@
 
 </div>
 
+{% if movimentacoes.has_other_pages %}
+
+<nav class="mt-4">
+    <ul class="pagination justify-content-center">
+
+        {% if movimentacoes.has_previous %}
+            <li class="page-item">
+                <a class="page-link"
+                   href="?page={{ movimentacoes.previous_page_number }}&q={{ query }}">
+                    Anterior
+                </a>
+            </li>
+        {% endif %}
+
+        <li class="page-item active">
+            <span class="page-link">
+                {{ movimentacoes.number }} / {{ movimentacoes.paginator.num_pages }}
+            </span>
+        </li>
+
+        {% if movimentacoes.has_next %}
+            <li class="page-item">
+                <a class="page-link"
+                   href="?page={{ movimentacoes.next_page_number }}&q={{ query }}">
+                    Próximo
+                </a>
+            </li>
+        {% endif %}
+
+    </ul>
+</nav>
+
+{% endif %}
+
 {% endblock %}

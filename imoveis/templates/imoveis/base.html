@@ -95,8 +95,8 @@
 
     <div class="container">
 
-        <a class="navbar-brand fw-bold" href="{% url 'imovel_list' %}">
-            CasaBella • Controle de Chaves
+        <a class="navbar-brand fw-bold" href="{% url 'dashboard' %}">
+            CasaBella Imobiliária • Controle de Chaves
         </a>
 
         <button class="navbar-toggler"
@@ -111,6 +111,10 @@
         <div class="collapse navbar-collapse" id="navbarNav">
 
             <div class="ms-auto d-flex gap-2 mt-3 mt-lg-0">
+
+                <a href="{% url 'dashboard' %}" class="btn btn-light btn-sm">
+                    Dashboard
+                </a>
 
                 <a href="{% url 'imovel_list' %}" class="btn btn-light btn-sm">
                     Imóveis
