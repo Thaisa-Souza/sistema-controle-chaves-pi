@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<h1 class="mb-4">Imóveis</h1>
+<h1 class="mb-4 fw-bold">Imóveis</h1>
 
 <a href="{% url 'imovel_create' %}" class="btn btn-success mb-3">
     Adicionar imóvel
@@ -60,9 +60,19 @@
 
     <div class="col-md-6 mb-3">
 
-        <div class="card shadow-sm h-100">
+        <div class="card shadow-sm h-100 border-0">
 
             <div class="card-body">
+
+                {% if imovel.foto %}
+
+                  <img src="{{ imovel.foto.url }}"
+                    class="img-fluid rounded mb-3"
+                    style="height: 200px;
+                      width: 100%;
+                      object-fit: cover;">
+
+                 {% endif %}
 
                 <h5 class="card-title">
                     {{ imovel.codigo }}
