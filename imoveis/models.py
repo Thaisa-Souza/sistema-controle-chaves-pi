@@ -13,7 +13,7 @@ class TipoImovel(models.Model):
 class Imovel(models.Model):
     codigo = models.CharField(max_length=50)
     endereco = models.CharField(max_length=200)
-    numero - models.CharField(max_length=6)
+    numero = models.CharField(max_length=6)
     bairro = models.CharField(max_length=100)
     tipo = models.ForeignKey(TipoImovel, on_delete=models.PROTECT)
     status = models.CharField(
