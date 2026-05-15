@@ -31,7 +31,7 @@ class Imovel(models.Model):
     altered_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.codigo} - {self.endereco}, {self.numero}"
+        return f"{self.codigo} - {self.endereco} - {self.numero}"
 
 class Chave(models.Model):
     imovel = models.OneToOneField(Imovel, on_delete=models.PROTECT)
@@ -60,14 +60,21 @@ class Movimentacao(models.Model):
 
     usuario = models.ForeignKey(
         User,
-        on_delete=models.PROTECT,
+        on_delete=models.PROTECT
     )
 
     nome_cliente = models.CharField(max_length=100)
 
     telefone_cliente = models.CharField(max_length=20)
 
-    acao = models.CharField(max_length=20)
+    ACTION_CHOICES = [
+        ('devolucao', 'Devolução'),
+        ('retirada', 'Retirada'),
+    ]
+
+    acao = models.CharField(
+        max_length=20,
+        choices=ACTION_CHOICES)
 
     data = models.DateTimeField(auto_now_add=True)
 
