@@ -13,9 +13,8 @@ class TipoImovel(models.Model):
 class Imovel(models.Model):
     codigo = models.CharField(max_length=50)
     endereco = models.CharField(max_length=200)
-    numero - models.CharField(max_length=6)
     bairro = models.CharField(max_length=100)
-    tipo = models.ForeignKey(TipoImovel, on_delete=models.PROTECT)
+    tipo = models.ForeignKey(TipoImovel, on_delete=models.SET_NULL, null=True, blank=True)
     status = models.CharField(
         max_length=50,
         choices=[
@@ -28,13 +27,12 @@ class Imovel(models.Model):
     )
     foto = models.ImageField(upload_to='imoveis/', blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    altered_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.codigo} - {self.endereco}, {self.numero}"
+        return f"{self.codigo} - {self.endereco}"
 
 class Chave(models.Model):
-    imovel = models.OneToOneField(Imovel, on_delete=models.PROTECT)
+    imovel = models.OneToOneField(Imovel, on_delete=models.CASCADE)
 
     STATUS_CHOICES = [
         ('disponivel', 'Disponível'),
@@ -49,23 +47,24 @@ class Chave(models.Model):
     )
 
     created_at = models.DateTimeField(auto_now_add=True)
-    altered_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"Chave - {self.imovel.codigo} - {self.imovel.endereco} - {self.imovel.numero}"
+        return f"Chave - {self.imovel.codigo}"
 
 
 class Movimentacao(models.Model):
-    chave = models.ForeignKey(Chave, on_delete=models.PROTECT)
+    chave = models.ForeignKey(Chave, on_delete=models.CASCADE)
 
     usuario = models.ForeignKey(
         User,
-        on_delete=models.PROTECT,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True
     )
 
-    nome_cliente = models.CharField(max_length=100)
+    nome_cliente = models.CharField(max_length=100, blank=True)
 
-    telefone_cliente = models.CharField(max_length=20)
+    telefone_cliente = models.CharField(max_length=20, blank=True)
 
     acao = models.CharField(max_length=20)
 
