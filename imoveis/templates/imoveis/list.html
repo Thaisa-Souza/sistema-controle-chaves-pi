@@ -141,11 +141,20 @@
                                 {% endif %}
 
                                 {% if user.is_superuser or 'Gerentes' in user.groups.all|join:', ' %}
-                                    <a href="{% url 'imovel_delete' imovel.pk %}"
-                                       class="btn btn-danger btn-sm mobile-action-btn">
-                                        Excluir
-                                    </a>
+                                  {% if imovel.status != 'inativo' %}
+                                     <a href="{% url 'imovel_delete' imovel.pk %}"
+                                        class="btn btn-danger btn-sm mobile-action-btn">
+                                          Inativar
+                                     </a>
+                                  {% else %}
+                                      <span class="btn btn-secondary btn-sm disabled">
+                                         Inativado
+                                      </span>
+                                  {% endif %}
+
                                 {% endif %}
+                    
+                </div>
                             </div>
                         </td>
                     </tr>
@@ -232,10 +241,17 @@
                     {% endif %}
 
                     {% if user.is_superuser or 'Gerentes' in user.groups.all|join:', ' %}
-                       <a href="{% url 'imovel_delete' imovel.pk %}"
-                          class="btn btn-danger btn-sm mobile-action-btn">
-                           Excluir
+                      {% if imovel.status != 'inativo' %}
+                        <a href="{% url 'imovel_delete' imovel.pk %}"
+                           class="btn btn-danger btn-sm mobile-action-btn">
+                            Inativar
                         </a>
+                      {% else %}
+                        <span class="btn btn-secondary btn-sm disabled">
+                          Inativado
+                        </span>
+                      {% endif %}
+
                     {% endif %}
 
                 </div>
