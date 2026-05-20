@@ -99,14 +99,16 @@ def imovel_update(request, pk):
 def imovel_delete(request, pk):
 
     if not usuario_eh_gerente(request.user):
-        messages.error(request, 'Você não tem permissão para excluir imóveis.')
+        messages.error(request, 'Você não tem permissão para inativar imóveis.')
         return redirect('imovel_list')
 
     imovel = get_object_or_404(Imovel, pk=pk)
 
     if request.method == 'POST':
-        imovel.delete()
-        messages.success(request, 'Imóvel excluído com sucesso!')
+        imovel.status = 'inativo'
+        imovel.save()
+
+        messages.success(request, 'Imóvel inativado com sucesso!')
         return redirect('imovel_list')
 
     return render(request, 'imoveis/confirm_delete.html', {

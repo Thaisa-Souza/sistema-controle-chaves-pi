@@ -34,7 +34,7 @@ class Imovel(models.Model):
         return f"{self.codigo} - {self.endereco} - {self.numero}"
 
 class Chave(models.Model):
-    imovel = models.OneToOneField(Imovel, on_delete=models.PROTECT)
+    imovel = models.OneToOneField(Imovel, on_delete=models.CASCADE)
 
     STATUS_CHOICES = [
         ('disponivel', 'Disponível'),
@@ -56,7 +56,7 @@ class Chave(models.Model):
 
 
 class Movimentacao(models.Model):
-    chave = models.ForeignKey(Chave, on_delete=models.PROTECT)
+    chave = models.ForeignKey(Chave, on_delete=models.CASCADE)
 
     usuario = models.ForeignKey(
         User,
